@@ -6,7 +6,7 @@ import {
   Star,
   StarBorder,
 } from "@mui/icons-material";
-import DataTable from "../../componenets/Table";
+import DataTable from "../../components/Table";
 import { useProject } from "../../context/ProjectContext";
 
 const ProjectList = () => {

@@ -1,5 +1,5 @@
 import { CssBaseline } from "@mui/material";
-import Layout from "./componenets/Layout";
+import Layout from "./components/Layout";
 // import Router from "./routes";
 import { Route, Routes } from "react-router-dom";
 import ProjectList from "./pages/project/ProjectList";
