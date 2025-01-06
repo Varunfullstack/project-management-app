@@ -14,12 +14,38 @@ import {
   CardContent,
   Typography,
   Stack,
+  CircularProgress,
+  TablePagination,
 } from "@mui/material";
+import { useProject } from "../context/ProjectContext";
 
-const DataTable = ({ columns, data }) => {
+const DataTable = ({ columns, data, page, itemsPerPage, totalCount }) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+  const { loading, updatePagination } = useProject();
 
+  const handleChangePage = (event, newPage) => {
+    updatePagination(newPage + 1, itemsPerPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    updatePagination(1, parseInt(event.target.value, 10));
+  };
+
+  if (loading) {
+    return (
+      <Box
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        height="50vh"
+      >
+        <CircularProgress />
+      </Box>
+    );
+  }
+
+  // Mobile view
   if (isMobile) {
     return (
       <Box sx={{ width: "100%" }}>
@@ -56,10 +82,20 @@ const DataTable = ({ columns, data }) => {
             </Card>
           ))}
         </Stack>
+        <TablePagination
+          rowsPerPageOptions={[5, 10, 20]}
+          component="div"
+          count={totalCount}
+          rowsPerPage={itemsPerPage}
+          page={page - 1}
+          onPageChange={handleChangePage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+        />
       </Box>
     );
   }
 
+  // Desktop view
   return (
     <Box sx={{ width: "100%" }}>
       <TableContainer component={Paper} sx={{ width: "100%", mb: 2 }}>
@@ -94,7 +130,9 @@ const DataTable = ({ columns, data }) => {
                     key={`${row.id}-${column.id}`}
                     align={column.align || "left"}
                   >
-                    {column.render ? column.render(row) : row[column.id]}
+                    {column.render
+                      ? column.render(row, index) // Pass the index here
+                      : row[column.id]}
                   </TableCell>
                 ))}
               </TableRow>
@@ -102,6 +140,15 @@ const DataTable = ({ columns, data }) => {
           </TableBody>
         </Table>
       </TableContainer>
+      <TablePagination
+        rowsPerPageOptions={[5, 10, 20]}
+        component="div"
+        count={totalCount}
+        rowsPerPage={itemsPerPage}
+        page={page - 1}
+        onPageChange={handleChangePage}
+        onRowsPerPageChange={handleChangeRowsPerPage}
+      />
     </Box>
   );
 };
@@ -116,7 +163,9 @@ DataTable.propTypes = {
     })
   ).isRequired,
   data: PropTypes.array.isRequired,
-  title: PropTypes.string,
+  page: PropTypes.number.isRequired,
+  itemsPerPage: PropTypes.number.isRequired,
+  totalCount: PropTypes.number.isRequired,
 };
 
 export default DataTable;

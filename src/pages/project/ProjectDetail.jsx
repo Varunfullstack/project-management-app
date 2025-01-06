@@ -26,7 +26,7 @@ const INITIAL_FORM_STATE = {
 const ProjectDetail = () => {
   const navigate = useNavigate();
   const { id } = useParams();
-  const { projects, updateProject, addProject } = useProject();
+  const { updateProject, addProject, totalProject } = useProject();
   const [formData, setFormData] = useState(INITIAL_FORM_STATE);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
@@ -38,12 +38,13 @@ const ProjectDetail = () => {
 
   useEffect(() => {
     if (!isNewProject) {
-      const project = projects.find((p) => p.id === id);
+      const project = totalProject?.find((p) => p?.id === id);
+
       if (project) {
         setFormData(project);
       }
     }
-  }, [id, projects, isNewProject]);
+  }, [id, totalProject, isNewProject]);
 
   const handleChange = (e) => {
     setFormData({

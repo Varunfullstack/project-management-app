@@ -11,8 +11,15 @@ import { useProject } from "../../context/ProjectContext";
 
 const ProjectList = () => {
   const navigate = useNavigate();
-  const { projects, deleteProject, favoriteProjects, toggleFavorite } =
-    useProject();
+  const {
+    projects,
+    deleteProject,
+    favoriteProjects,
+    toggleFavorite,
+    page,
+    itemsPerPage,
+    totalProject,
+  } = useProject();
 
   const handleDelete = (id) => {
     if (window.confirm("Are you sure you want to delete this project?")) {
@@ -21,7 +28,11 @@ const ProjectList = () => {
   };
 
   const columns = [
-    { id: "id", label: "Sr.No." },
+    {
+      id: "id",
+      label: "Sr.No.",
+      render: (row, index) => (page - 1) * itemsPerPage + index + 1,
+    },
     { id: "name", label: "Name" },
     { id: "startDate", label: "Start Date" },
     { id: "endDate", label: "End Date" },
@@ -83,7 +94,13 @@ const ProjectList = () => {
         </Button>
       </Stack>
 
-      <DataTable columns={columns} data={projects} />
+      <DataTable
+        columns={columns}
+        data={projects}
+        page={page}
+        itemsPerPage={itemsPerPage}
+        totalCount={totalProject?.length}
+      />
     </Box>
   );
 };
